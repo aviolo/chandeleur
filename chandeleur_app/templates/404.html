@@ -1,0 +1,15 @@
+{% extends "fdp_app/base.html" %}{% load i18n %}{% load static %}
+
+{% block title %}{% trans "Page non Trouvée" %}{% endblock %}
+
+{% block body %}
+    <div id="bloc_page">                       
+        <div class="center">
+            <div class="block">
+                <div class="title">Erreur</div>
+            Page non Trouvée.<br> 
+            Le lien que vous avez suivit ou l'adresse saisie ne correspond pas à une page.
+            </div>
+        </div>
+    </div>
+{% endblock %}
