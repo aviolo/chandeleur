@@ -91,15 +91,15 @@ if __name__ == '__main__':
                         db_path = dbs.get('NAME')
                 else:
                     # MySQL
-                    dump_cmd = 'mysqldump -u %s %s %s --ignore-table=chandeleur.django_session > "%s/%s.sql"' % (
+                    dump_cmd = "mysqldump -u %s %s %s --ignore-table=chandeleur.django_session > '%s/%s.sql'" % (
                         dbs.get('USER', 'root'),
-                        '-p"%s"' % dbs['PASSWORD'] if dbs.get('PASSWORD') else '',
+                        "-p'%s'" % dbs['PASSWORD'] if dbs.get('PASSWORD') else '',
                         dbs.get('NAME', 'chandeleur'),
                         DUMPS_DIR,
                         now.strftime('%Y-%m-%d_%H-%M-%S'),
                     )
         if not dump_cmd:
-            dump_cmd = 'cp "%s" "%s/%s.db"' % (db_path, DUMPS_DIR, now.strftime('%Y-%m-%d_%H-%M-%S'))
+            dump_cmd = "cp '%s' '%s/%s.db'" % (db_path, DUMPS_DIR, now.strftime('%Y-%m-%d_%H-%M-%S'))
         if not os.path.exists(DUMPS_DIR):
             os.makedirs(DUMPS_DIR)
         rc = _exec(dump_cmd)
