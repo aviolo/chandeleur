@@ -1,27 +1,27 @@
 #!/bin/bash
 
 ### BEGIN INIT INFO
-# Provides:          fdp
+# Provides:          chandeleur
 # Required-Start:    $local_fs $network $syslog
 # Required-Stop:     $local_fs $network $syslog
 # Default-Start:     2 3 4 5
 # Default-Stop:      0 1 6
-# Short-Description: fdp
-# Description:       fdp management script
+# Short-Description: chandeleur
+# Description:       chandeleur management script
 ### END INIT INFO
 
-# This script should be located in /etc/init.d/fdp
+# This script should be located in /etc/init.d/chandeleur
 #   (do not make a link because it won't work at system boot)
-#   cp /home/fdp/fdp/scripts/init.d.sh /etc/init.d/fdp
+#   cp /home/chandeleur/chandeleur/scripts/init.d.sh /etc/init.d/chandeleur
 # To make this script start at boot:
-#   update-rc.d fdp defaults 96 00
+#   systemctl enable chandeleur
 # To remove it use:
-#   update-rc.d -f fdp remove
+#   systemctl disable chandeleur
 
 if [[ $# < 1 ]]; then
     echo "Not enough arguments."
     exit 1
 fi
 
-/bin/su fdp -c "python3 /home/chandeleur/chandeleur/scripts/control.py $1"
+/bin/su chandeleur -c "python3 /home/chandeleur/chandeleur/scripts/control.py $1"
 exit $?
