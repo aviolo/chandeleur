@@ -11,6 +11,7 @@ li
 	margin: 8px;
     margin-left: 22px;
 	cursor: pointer;
+	list-style-type: none;
 }
 
 a{
