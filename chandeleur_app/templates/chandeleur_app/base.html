@@ -1,33 +1,36 @@
 {% load i18n %}{% load static %}<!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" lang="{{ LANG }}">
 <head>
-    <title>Foyer du Porteau - {% block wtitle %}{% endblock %}</title>
+    <title>Marche de la chandeleur - {% block wtitle %}{% endblock %}</title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
 
     <link rel="shortcut icon" href="{% static 'images/favicon.png' %}?_=1"/>
-    <link rel="stylesheet" href="{% static 'stylesheets/header.css' %}"/>
-    <link rel="stylesheet" href="{% static 'stylesheets/style.css' %}"/>
-    <link rel="stylesheet" href="{% static 'stylesheets/font.css' %}"/>
-    <link rel="stylesheet" href="{% static 'stylesheets/blocks.css' %}"/>
-    <link rel="stylesheet" href="{% static 'stylesheets/footer.css' %}"/>
+    <link rel="stylesheet" type="text/css" href="{% static 'stylesheets/header.css' %}"/>
+    <link rel="stylesheet" type="text/css" href="{% static 'stylesheets/style.css' %}"/>
+    <link rel="stylesheet" type="text/css" href="{% static 'stylesheets/font.css' %}"/>
+    <link rel="stylesheet" type="text/css" href="{% static 'stylesheets/blocks.css' %}"/>
+    <link rel="stylesheet" type="text/css" href="{% static 'stylesheets/footer.css' %}"/>
+    <link rel="stylesheet" type="text/css" href="{% static 'stylesheets/inputs.css' %}"/>
 
-    <link rel="stylesheet" href="{% static 'jquery/jquery-ui.min.css' %}"/>
+    <!--<link rel="stylesheet" href="{% static 'jquery/jquery-ui.min.css' %}"/>
     <script src="{% static 'jquery/jquery.min.js' %}"></script>
     <script src="{% static 'jquery/jquery-ui.min.js' %}"></script>
+    <script src="{% static 'jquery/jquery-ui-timepicker-addon.js' %}"></script>-->
+
+    <!--<script type="text/javascript" src="{% static 'javascripts/slide.js' %}"></script>-->
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
     <script src="{% static 'jquery/jquery-ui-timepicker-addon.js' %}"></script>
-
-    <script type="text/javascript" src="{% static 'javascripts/slide.js' %}"></script>
-
     {% block head %}{% endblock %}
 </head>
 
 <body>
     <div id="header">
         <div class="header-bg">
-            {% if username %}
+            {% if request.user.username %}
                 <div class="username">
-                    Bonjour {{ username }}<br />
+                    Bonjour {{ request.user.username }}<br />
                     <a href="{% url 'logout' %}">se déconnecter<br /></a>
                 </div>
             {% else %}
@@ -35,30 +38,10 @@
                     <a href="{% url 'login' %}">s'identifier</a>
                 </div>
             {% endif %}
-            <a href="{% url 'fdp_app-home_view' %}"><div class="banner"></div></a>
-        </div>
-        <div id="menu">
-            {% for section in all_sections %}
-                {% if section.types == 1 and section.hide != 1 %}
-                    {% if section.name == 'Accueil' %}
-                        <li><a href="{% url 'fdp_app-home_view' %}">{{ section.name }}</a></li>
-                    {% elif section.name == 'Activités' %}
-                        <li><a href="{% url 'fdp_app-activites_view' %}">{{ section.name }}</a></li>
-                    {% elif section.name == 'Précédent site' %}
-                        <li><a href="http://www.old.foyerduporteau.net/">{{ section.name }}</a></li>
-                    {% elif section.name == 'Photos' %}
-                        <li><a href="{% url 'fdp_app-pictures_view' 2014 %}">{{ section.name }}</a></li>
-                    {% elif section.name == 'Animations' %}
-                        <li><a href="{% url 'fdp_app-pictures_view' %}">{{ section.name }}</a></li>
-                    {% else %}
-                        <li><a href="{% url 'fdp_app-infos_view' section.slug %}">{{ section.name }}</a></li>
-                    {% endif %}
-                {% endif %}
-            {% endfor %}
+            <a href="{% url 'chandeleur_app-home_view' %}"><div class="banner"></div></a>
         </div>
     </div>
     <div id="bloc_page">
-        {% include "fdp_app/sides.html" %}
         {% block body %}{% endblock %}
     </div>
     <footer id="footer">

@@ -1,0 +1,35 @@
+/* ----- Jquery UI ----- */
+.ui-widget {
+    font-size: inherit;
+    line-height: normal;
+}
+.ui-datepicker {
+    z-index: 200 !important;
+}
+/* Search box */
+.ui-autocomplete {
+    z-index: 102;
+}
+.ui-autocomplete-loading {
+    background: white url("../images/icons/loading_16.gif") 100% 50% no-repeat;
+}
+.ui-autocomplete-category {
+    clear: left;
+    padding: 2px 4px;
+    background: #ddd;
+    background: -moz-linear-gradient(top, #eee, #ccc);
+    background: -webkit-gradient(linear, left top, left bottom, from(#eee), to(#ccc));
+}
+/* limit search height */
+.search-autocomplete-list {
+    max-height: 90%;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+.search-autocomplete-list .search-item {
+    padding: 0;
+}
+.search-autocomplete-list .search-item a {
+    display: block;
+    padding: 2px 4px;
+}
