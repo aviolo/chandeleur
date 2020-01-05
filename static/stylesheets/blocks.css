@@ -1,9 +1,7 @@
 .block
 {
-	background-color: #fefbe0;
-    border: 1px solid #f67521;
-    -moz-border-radius: 10px;
-    border-radius: 10px;
+    border-bottom: 2px solid #1C6EA4;
+    border-radius: 0px 28px 0px 0px;
 	overflow : hidden;
 	margin: 8px;
     padding: 8px;
@@ -21,10 +19,10 @@
 
 .title
 {
-    font-size: 20px;
-	text-align: left;
-    font-weight: bold;
-	color: #f67521;
+    font-family: "Roboto Slab", serif;
+    font-weight: 700;
+    line-height: 1.5;
+	color: #1C6EA4;
 }
 
 .transparent_block .title
@@ -32,7 +30,7 @@
     font-size: 20px;
 	text-align: left;
     font-weight: bold;
-	color: #ffffff;
+	color: #1C6EA4;
 }
 
 .block .title
@@ -40,7 +38,7 @@
     font-size: 20px;
 	text-align: left;
     font-weight: bold;
-	color: #f67521;
+	color: #1C6EA4;
 }
 
 .block .title a
