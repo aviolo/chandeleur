@@ -130,9 +130,11 @@
                         </tbody></table>
                         <input type="submit" value="Valider" />
                     </form>
-                    
-                    <div class="title">Nombre de personne enregistré : {{ nb_sign }} </div>
-                    <div class="title">Nombre de personne inscrite : {{ nb_registered }} </div>
+                    <div class="title">Nombre de personne enregistré : {{ nb_sign }}</div>
+                    <div class="title">Nombre de personne inscrite : {{ nb_registered }}</div>
+                    <div>
+                        <a href="{% url 'chandeleur_app-statistiques' %}">Statistiques</a>
+                    </div>
                 </div>
             </div>
         </div>

@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 import logging
 import re
 from django.conf import settings
@@ -27,6 +27,8 @@ def on_error(text, will_send_mail=True):
 def home_view(request):
     user = None
     registration_form = None
+    nb_sign = 0
+    nb_register = 0
     try:
         user = request.user
         if user.is_active:
@@ -149,6 +151,51 @@ def user_search(request, input_name, ajax=False):
             return JsonResponse(club_name_register, safe=False)
 
 
+def statistiques(request):
+    nb_sign = models.RegisteredPerson.objects.all().filter(present=True).count()
+    nb_woman = models.RegisteredPerson.objects.all().filter(sex=True, present=True).count()
+    nb_man = models.RegisteredPerson.objects.all().filter(sex=False, present=True).count()
+    womans = models.RegisteredPerson.objects.filter(sex=True, present=True)
+    young_woman_list = list()
+    for index, person in enumerate(womans.order_by('birth_date')):
+        if index == 4:
+            break
+        young_woman_list.append({"first_name": person.first_name, "last_name": person.last_name, "birth_date": person.birth_date})
+    old_woman_list = list()
+    for index, person in enumerate(womans.order_by('birth_date').reverse()):
+        if index == 4:
+            break
+        old_woman_list.append({"first_name": person.first_name, "last_name": person.last_name, "birth_date": person.birth_date})
+    mans = models.RegisteredPerson.objects.filter(sex=False, present=True)
+    young_man_list = list()
+    for index, person in enumerate(mans.order_by('birth_date')):
+        if index == 4:
+            break
+        young_man_list.append({"first_name": person.first_name, "last_name": person.last_name, "birth_date": person.birth_date})
+    old_man_list = list()
+    for index, person in enumerate(mans.order_by('birth_date').reverse()):
+        if index == 4:
+            break
+        old_man_list.append({"first_name": person.first_name, "last_name": person.last_name, "birth_date": person.birth_date})
+    info = list()
+    for club in get_all_club():
+        old_woman = models.RegisteredPerson.objects.all().filter(present=True, club_name_id=club.id, sex=True, birth_date__lt=datetime.now() - timedelta(days=365 * 18)).count()
+        young_woman = models.RegisteredPerson.objects.all().filter(present=True, club_name_id=club.id, sex=True, birth_date__gt=datetime.now() - timedelta(days=365 * 18)).count()
+        old_man = models.RegisteredPerson.objects.all().filter(present=True, club_name_id=club.id, sex=False, birth_date__lt=datetime.now() - timedelta(days=365 * 18)).count()
+        young_man = models.RegisteredPerson.objects.all().filter(present=True, club_name_id=club.id, sex=False, birth_date__gt=datetime.now() - timedelta(days=365 * 18)).count()
+        total = models.RegisteredPerson.objects.all().filter(present=True, club_name_id=club.id).count()
+        info.append({"club_name": club.name, "old_woman": old_woman, "young_woman": young_woman, "old_man": old_man, "young_man": young_man, "total": total})
+    old_woman = models.RegisteredPerson.objects.all().filter(present=True, club_name_id=None or None, sex=True, birth_date__lt=datetime.now() - timedelta(days=365 * 18)).count()
+    young_woman = models.RegisteredPerson.objects.all().filter(present=True, club_name_id=None, sex=True, birth_date__gt=datetime.now() - timedelta(days=365 * 18)).count()
+    old_man = models.RegisteredPerson.objects.all().filter(present=True, club_name_id=None, sex=False, birth_date__lt=datetime.now() - timedelta(days=365 * 18)).count()
+    young_man = models.RegisteredPerson.objects.all().filter(present=True, club_name_id=None, sex=False, birth_date__gt=datetime.now() - timedelta(days=365 * 18)).count()
+    total = models.RegisteredPerson.objects.all().filter(present=True, club_name_id=None).count()
+    info.append({"club_name": "Pas de club", "old_woman": old_woman, "young_woman": young_woman, "old_man": old_man, "young_man": young_man, "total": total})
+    return render(request, "chandeleur_app/statistiques.html", {
+        "nb_sign": nb_sign, "nb_woman": nb_woman, "nb_man": nb_man, "young_woman": young_woman_list, "old_woman": old_woman_list, "young_man": young_man_list, "old_man": old_man_list, "info": info
+    })
+
+
 def add_new_club(request, club_name):
     try:
         new_club = models.Club()
@@ -173,6 +220,10 @@ def get_trip_size_instance_by_id(trip_size_id):
 
 def get_trip_size_id_by_name(trip_size_name):
     return models.TripSize.objects.all().filter(name=trip_size_name)[0].id
+
+
+def get_all_club():
+    return models.Club.objects.all()
 
 
 def get_club_id_by_name(club_name):
