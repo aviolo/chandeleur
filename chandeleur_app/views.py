@@ -1,4 +1,5 @@
 from datetime import datetime, timedelta
+from django.utils import timezone
 import logging
 import re
 from django.conf import settings
@@ -9,8 +10,6 @@ from django.shortcuts import render
 
 from chandeleur_app import forms
 from chandeleur_app import models
-
-# Create your views here.
 
 
 logger = logging.getLogger('chandeleur_app.views')
@@ -155,6 +154,12 @@ def statistiques(request):
     nb_sign = models.RegisteredPerson.objects.all().filter(present=True).count()
     nb_woman = models.RegisteredPerson.objects.all().filter(sex=True, present=True).count()
     nb_man = models.RegisteredPerson.objects.all().filter(sex=False, present=True).count()
+    all_trip_size = get_all_size_trip()
+    nb_trip_size_list = list()
+    for trip_size in all_trip_size:
+        if "BENEVOLE" not in trip_size.name:
+            result = models.RegisteredPerson.objects.all().filter(trip_size=trip_size).count()
+            nb_trip_size_list.append({"size_name": trip_size.name, "size_nb": result})
     womans = models.RegisteredPerson.objects.filter(sex=True, present=True)
     young_woman_list = list()
     for index, person in enumerate(womans.order_by('birth_date')):
@@ -179,20 +184,20 @@ def statistiques(request):
         old_man_list.append({"first_name": person.first_name, "last_name": person.last_name, "birth_date": person.birth_date})
     info = list()
     for club in get_all_club():
-        old_woman = models.RegisteredPerson.objects.all().filter(present=True, club_name_id=club.id, sex=True, birth_date__lt=datetime.now() - timedelta(days=365 * 18)).count()
-        young_woman = models.RegisteredPerson.objects.all().filter(present=True, club_name_id=club.id, sex=True, birth_date__gt=datetime.now() - timedelta(days=365 * 18)).count()
-        old_man = models.RegisteredPerson.objects.all().filter(present=True, club_name_id=club.id, sex=False, birth_date__lt=datetime.now() - timedelta(days=365 * 18)).count()
-        young_man = models.RegisteredPerson.objects.all().filter(present=True, club_name_id=club.id, sex=False, birth_date__gt=datetime.now() - timedelta(days=365 * 18)).count()
+        old_woman = models.RegisteredPerson.objects.all().filter(present=True, club_name_id=club.id, sex=True, birth_date__lt=timezone.now() - timedelta(days=365 * 18)).count()
+        young_woman = models.RegisteredPerson.objects.all().filter(present=True, club_name_id=club.id, sex=True, birth_date__gt=timezone.now() - timedelta(days=365 * 18)).count()
+        old_man = models.RegisteredPerson.objects.all().filter(present=True, club_name_id=club.id, sex=False, birth_date__lt=timezone.now() - timedelta(days=365 * 18)).count()
+        young_man = models.RegisteredPerson.objects.all().filter(present=True, club_name_id=club.id, sex=False, birth_date__gt=timezone.now() - timedelta(days=365 * 18)).count()
         total = models.RegisteredPerson.objects.all().filter(present=True, club_name_id=club.id).count()
         info.append({"club_name": club.name, "old_woman": old_woman, "young_woman": young_woman, "old_man": old_man, "young_man": young_man, "total": total})
-    old_woman = models.RegisteredPerson.objects.all().filter(present=True, club_name_id=None or None, sex=True, birth_date__lt=datetime.now() - timedelta(days=365 * 18)).count()
-    young_woman = models.RegisteredPerson.objects.all().filter(present=True, club_name_id=None, sex=True, birth_date__gt=datetime.now() - timedelta(days=365 * 18)).count()
-    old_man = models.RegisteredPerson.objects.all().filter(present=True, club_name_id=None, sex=False, birth_date__lt=datetime.now() - timedelta(days=365 * 18)).count()
-    young_man = models.RegisteredPerson.objects.all().filter(present=True, club_name_id=None, sex=False, birth_date__gt=datetime.now() - timedelta(days=365 * 18)).count()
+    old_woman = models.RegisteredPerson.objects.all().filter(present=True, club_name_id=None or None, sex=True, birth_date__lt=timezone.now() - timedelta(days=365 * 18)).count()
+    young_woman = models.RegisteredPerson.objects.all().filter(present=True, club_name_id=None, sex=True, birth_date__gt=timezone.now() - timedelta(days=365 * 18)).count()
+    old_man = models.RegisteredPerson.objects.all().filter(present=True, club_name_id=None, sex=False, birth_date__lt=timezone.now() - timedelta(days=365 * 18)).count()
+    young_man = models.RegisteredPerson.objects.all().filter(present=True, club_name_id=None, sex=False, birth_date__gt=timezone.now() - timedelta(days=365 * 18)).count()
     total = models.RegisteredPerson.objects.all().filter(present=True, club_name_id=None).count()
     info.append({"club_name": "Pas de club", "old_woman": old_woman, "young_woman": young_woman, "old_man": old_man, "young_man": young_man, "total": total})
     return render(request, "chandeleur_app/statistiques.html", {
-        "nb_sign": nb_sign, "nb_woman": nb_woman, "nb_man": nb_man, "young_woman": young_woman_list, "old_woman": old_woman_list, "young_man": young_man_list, "old_man": old_man_list, "info": info
+        "nb_sign": nb_sign, "nb_woman": nb_woman, "nb_man": nb_man, "nb_small": nb_trip_size_list[0]["size_nb"], "nb_medium": nb_trip_size_list[1]["size_nb"], "nb_big": nb_trip_size_list[2]["size_nb"], "young_woman": young_woman_list, "old_woman": old_woman_list, "young_man": young_man_list, "old_man": old_man_list, "info": info
     })
 
 
@@ -220,6 +225,10 @@ def get_trip_size_instance_by_id(trip_size_id):
 
 def get_trip_size_id_by_name(trip_size_name):
     return models.TripSize.objects.all().filter(name=trip_size_name)[0].id
+
+
+def get_all_size_trip():
+    return models.TripSize.objects.all()
 
 
 def get_all_club():
