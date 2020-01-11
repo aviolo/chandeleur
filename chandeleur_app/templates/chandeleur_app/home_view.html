@@ -92,9 +92,17 @@
 {% block body %}
     {% if request.user.username %}
         <div class="center">
+            <span style="float:left;"> Nombre de personnes inscrites par l'utilisateur actuel : <span class=title> {{ nb_registered }} </span>  </span>​
+            <span style="float:right;"> Nombre de personnes inscrites au total : <span class=title> {{ nb_sign }} </span>  </span>
+
+            <div id="menu">
+                <li><a href="{% url 'chandeleur_app-statistiques' %}">Statistiques</a></li>
+                <li><a href="{% url 'chandeleur_app-home_view' %}">Inscription</a></li>
+            </div>
+
             <div id="content">
                 <div class="block">
-                    <div class="title">Enregistrement de personne :</div>
+                    <div class="title">Inscription :</div>
                     <form action="add_user" id="person_form" method="post" enctype="multipart/form-data">
                         {% csrf_token %}
                         <table><tbody>
@@ -123,7 +131,7 @@
                                         <th>Prix : </th> <td>{{ field }}</td>
                                         <td style="color:red;">{{ field.errors }}</td>
                                     {% elif field.label == 'Trip size' %}
-                                        <th>Taille du parcour : </th> <td>{{ field }}</td>
+                                        <th>Taille du parcours : </th> <td>{{ field }}</td>
                                         <td style="color:red;">{{ field.errors }}</td>
                                     {% endif %}
                                 </tr>
@@ -131,11 +139,6 @@
                         </tbody></table>
                         <input type="submit" value="Valider" />
                     </form>
-                    <div class="title">Nombre de personne enregistré : {{ nb_sign }}</div>
-                    <div class="title">Nombre de personne inscrite : {{ nb_registered }}</div>
-                    <div>
-                        <a href="{% url 'chandeleur_app-statistiques' %}">Statistiques</a>
-                    </div>
                 </div>
             </div>
         </div>

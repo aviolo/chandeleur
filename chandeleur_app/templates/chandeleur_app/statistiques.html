@@ -8,72 +8,86 @@
 {% block body %}
     {% if request.user.username %}
         <div class="center">
+
+            <div id="menu">
+                <li><a href="{% url 'chandeleur_app-statistiques' %}">Statistiques</a></li>
+                <li><a href="{% url 'chandeleur_app-home_view' %}">Inscription</a></li>
+            </div>
+
+
             <div id="content">
-            	<div>
-                    <a href="{% url 'chandeleur_app-home_view' %}">Accueil</a>
-                </div>
                 <div class="block">
-                    <div class="title">Statistiques:</div>
-                    <div>Stat global</div>
+                    <div class="title">Statistiques: </div>
+
                     <div>
 	                    <table><tbody>
 	                    	 <tr>
-	                    	 	<th>Nombre d'inscrits : </th><td>{{ nb_sign }}</td>
+	                    	 	<th>Nombre d'inscrits : </th><th>Nombre de femmes : </th><th>Nombre d'hommes : </th>
 	                    	 </tr>
 	                    	 <tr>
-	                    	 	<th>Nombre de femme inscrites : </th><td>{{ nb_woman }}</td>
+	                    	 	<td>{{ nb_sign }}</td>
+	                    	 	<td>{{ nb_woman }}</td>
+	                    	 	<td>{{ nb_man }}</td>
 	                    	 </tr>
-	                    	 <tr>
-	                    	 	<th>Nombre d'homme inscrits : </th><td>{{ nb_man }}</td>
-	                    	 </tr>
 	                    </tbody></table>
 	                </div>
-	                <div>Statistique d'age</div>
-	                <div>Les femmes les plus jeunes :</div>
+	            </div>
+
+	            <div class="block">
+	                <div class="title">Statistiques par club</div>
 	                <div>
 		                <table><tbody>
-		                	<tr><td>Prénom : </td><td>Nom : </td><td>Date de naissance :  </td></tr>
-	                        {% for field in young_woman %}
-	                        	<tr><td>{{ field.first_name }}</td><td>{{ field.last_name }}</td><td>{{ field.birth_date }}</td></tr>
-	                        {% endfor %}
-	                    </tbody></table>
-	                </div>
-	                <div>Les femmes les plus agés :</div>
-	                <div>
-		                <table><tbody>
-		                	<tr><td>Prénom : </td><td>Nom : </td><td>Date de naissance :  </td></tr>
-	                        {% for field in old_woman %}
-	                        	<tr><td>{{ field.first_name }}</td><td>{{ field.last_name }}</td><td>{{ field.birth_date }}</td></tr>
-	                        {% endfor %}
-	                    </tbody></table>
-	                </div>
-	                <div>Les hommes les plus jeunes :</div>
-	                <div>
-		                <table><tbody>
-		                	<tr><td>Prénom : </td><td>Nom : </td><td>Date de naissance :  </td></tr>
-	                        {% for field in young_man %}
-	                        	<tr><td>{{ field.first_name }}</td><td>{{ field.last_name }}</td><td>{{ field.birth_date }}</td></tr>
-	                        {% endfor %}
-	                    </tbody></table>
-	                </div>
-	                <div>Les hommes les plus agés :</div>
-	                <div>
-		                <table><tbody>
-		                	<tr><td>Prénom : </td><td>Nom : </td><td>Date de naissance :  </td></tr>
-	                        {% for field in old_man %}
-	                        	<tr><td>{{ field.first_name }}</td><td>{{ field.last_name }}</td><td>{{ field.birth_date }}</td></tr>
-	                        {% endfor %}
-	                    </tbody></table>
-	                </div>
-	                <div>Statistique par club</div>
-	                <div>
-		                <table><tbody>
-		                	<tr><td>nom du club : </td><td>Femme -18 ans : </td><td>Femme +18 ans :  </td><td>Homme -18 ans : </td><td>homme +18 ans : </td><td>Total : </td></tr>
+		                	<tr><th>Nom du club : </th><th>Femme -18 ans : </th><th>Femme +18 ans :  </th><th>Homme -18 ans : </th><th>Homme +18 ans : </th><th>Total : </th></tr>
 	                        {% for field in info %}
 	                        	<tr><td>{{ field.club_name }}</td><td>{{ field.young_woman }}</td><td>{{ field.old_woman }}</td><td>{{ field.young_man }}</td><td>{{ field.old_man }}</td><td>{{ field.total }}</td></tr>
 	                        {% endfor %}
 	                    </tbody></table>
 	                </div>
+	            </div>    
+
+				<div class="block">
+	                <div class="title">Ages des inscrits:</div>
+	                <div class="subtitle">Les femmes les plus jeunes :</div>
+	                <div>
+		                <table><tbody>
+		                	<tr><th>Prénom : </th><th>Nom : </th><th>Date de naissance :  </th></tr>
+	                        {% for field in young_woman %}
+	                        	<tr><td>{{ field.first_name }}</td><td>{{ field.last_name }}</td><td>{{ field.birth_date }}</td></tr>
+	                        {% endfor %}
+	                    </tbody></table>
+	                </div>
+
+	                <div class="subtitle">Les femmes les plus agés :</div>
+	                <div>
+		                <table><tbody>
+		                	<tr><th>Prénom : </th><th>Nom : </th><th>Date de naissance :  </th></tr>
+	                        {% for field in old_woman %}
+	                        	<tr><td>{{ field.first_name }}</td><td>{{ field.last_name }}</td><td>{{ field.birth_date }}</td></tr>
+	                        {% endfor %}
+	                    </tbody></table>
+	                </div>
+
+	                <div class="subtitle">Les hommes les plus jeunes :</div>
+	                <div>
+		                <table><tbody>
+		                	<tr><th>Prénom : </th><th>Nom : </th><th>Date de naissance :  </th></tr>
+	                        {% for field in young_man %}
+	                        	<tr><td>{{ field.first_name }}</td><td>{{ field.last_name }}</td><td>{{ field.birth_date }}</td></tr>
+	                        {% endfor %}
+	                    </tbody></table>
+	                </div>
+
+	                <div class="subtitle">Les hommes les plus agés :</div>
+	                <div>
+		                <table><tbody>
+		                	<tr><th>Prénom : </th><th>Nom : </th><th>Date de naissance :  </th></tr>
+	                        {% for field in old_man %}
+	                        	<tr><td>{{ field.first_name }}</td><td>{{ field.last_name }}</td><td>{{ field.birth_date }}</td></tr>
+	                        {% endfor %}
+	                    </tbody></table>
+	                </div>
+	                <br>
+	                
                 </div>
             </div>
         </div>
