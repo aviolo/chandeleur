@@ -5,7 +5,7 @@
 {% block head %}
     <script type="text/javascript">
         $(function () {
-            $("#birth_date").datetimepicker({dateFormat: "dd/mm/aaaa"});
+            $("#birth_date").datepicker({dateFormat: "dd/mm/yy"});
             $.widget("custom.catcomplete", $.ui.autocomplete, {
                 _create: function() {
                     this._super();
@@ -119,7 +119,7 @@
                                 </tr>
                             {% endfor %}
                         </tbody></table>
-                        <input type="submit" value="Valider" />
+                        <input type="submit" class="submit" value="Valider" style="float:right;"/>
                     </form>
                 </div>
             </div>
