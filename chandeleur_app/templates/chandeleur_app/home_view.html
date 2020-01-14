@@ -21,37 +21,42 @@
                 }
             });
             function complete_other_filed(ui) {
-                var first_name = document.getElementById("first_name");
+                var first_name = document.getElementById("id_first_name");
                 first_name.value = ui.item.first_name;
-                var last_name = document.getElementById("last_name");
+                var last_name = document.getElementById("id_last_name");
                 last_name.value = ui.item.last_name;
                 if (ui.item.birth_date) {
                     var birth_date_value = ui.item.birth_date.split("T")[0].replace(/-/g, "/");
                     var mydate = new Date(birth_date_value).toLocaleDateString("fr-FR");
-                    var birth_date_tag = document.getElementById("birth_date");
+                    var birth_date_tag = document.getElementById("id_birth_date");
                     birth_date_tag.value = mydate;
                 }
-                var city = document.getElementById("city");
+                var city = document.getElementById("id_city");
                 city.value = ui.item.city;
-                var club_name = document.getElementById("club_name");
+                var club_name = document.getElementById("id_club_name");
                 club_name.value = ui.item.club_name;
-                var license_name = document.getElementById("license_name");
-                if (ui.item.license_name !== null)
-                    license_name.value = ui.item.license_name;
-                var license_number = document.getElementById("license_number");
+                var license_name = document.getElementById("id_license");
+                for (var index = 0; license_name[index]; index++) {
+                    if (license_name[index].label.indexOf(ui.item.license_name) === 0) {
+                        license_name.selectedIndex = index;
+                        break;
+                    }
+
+                }
+                var license_number = document.getElementById("id_license_number");
                 license_number.value = ui.item.license_number;
                 if (ui.item.sex) {
-                    var sex = document.getElementById("sex_0");
+                    var sex = document.getElementById("id_sex_0");
                     sex.checked = true;
                 } else {
-                    var sex = document.getElementById("sex_1");
+                    var sex = document.getElementById("id_sex_1");
                     sex.checked = true;
                 }
                 if (ui.item.price === 0) {
-                    var price = document.getElementById("price_0");
+                    var price = document.getElementById("id_price_0");
                     price.checked = true;
                 } else {
-                    var price = document.getElementById("price_1");
+                    var price = document.getElementById("id_price_1");
                     price.checked = true;
                 }
                 var trip_size = document.getElementById("id_trip_size");
@@ -63,21 +68,21 @@
 
                 }
             }
-            $("#first_name").catcomplete({
+            $("#id_first_name").catcomplete({
                 source: "{% url 'ajax-search' 'firstname' %}",
                 delay: 0,
                 select: function (event, ui) {
                     complete_other_filed(ui);
                 }
             });
-            $("#last_name").catcomplete({
+            $("#id_last_name").catcomplete({
                 source: "{% url 'ajax-search' 'lastname' %}",
                 delay: 0,
                 select: function (event, ui) {
                     complete_other_filed(ui);
                 }
             });
-            $("#club_name").catcomplete({
+            $("#id_club_name").catcomplete({
                 source: "{% url 'ajax-search' 'clubname' %}",
                 delay: 0,
                 select: function (event, ui) {
@@ -106,34 +111,11 @@
                     <form action="add_user" id="person_form" method="post" enctype="multipart/form-data">
                         {% csrf_token %}
                         <table><tbody>
-                            {% for field in registration_form %}
+                             {% for field in registration_form %}
                                 <tr>
-                                    {% if field.label == 'First name' %}
-                                        <th>Prénom : </th><td>{{ field }}</td>
-                                        <td style="color:red;">{{ field.errors }}</td> 
-                                    {% elif field.label == 'Last name' %}
-                                        <th>Nom : </th> <td>{{ field }}</td>
-                                        <td style="color:red;">{{ field.errors }}</td>
-                                    {% elif field.label == 'Birth date' %}
-                                        <th>Date de naissance : </th> <td>{{ field }}</td>
-                                    {% elif field.label == 'City' %}
-                                        <th>Ville : </th> <td>{{ field }}</td>
-                                    {% elif field.label == 'Club name' %}
-                                        <th>Nom du club : </th> <td>{{ field }}</td>
-                                    {% elif field.label == 'License name' %}
-                                        <th>Nom de licence : </th> <td>{{ field }}</td>
-                                    {% elif field.label == 'Number license' %}
-                                        <th>Numéro de licence : </th> <td>{{ field }}</td>
-                                    {% elif field.label == 'Sex' %}
-                                        <th>Sexe : </th> <td>{{ field }}</td>
-                                        <td style="color:red;">{{ field.errors }}</td>
-                                    {% elif field.label == 'Price' %}
-                                        <th>Prix : </th> <td>{{ field }}</td>
-                                        <td style="color:red;">{{ field.errors }}</td>
-                                    {% elif field.label == 'Trip size' %}
-                                        <th>Taille du parcours : </th> <td>{{ field }}</td>
-                                        <td style="color:red;">{{ field.errors }}</td>
-                                    {% endif %}
+                                    <th>{{ field.label }}</th>
+                                    <td>{{ field }}</td>
+                                    <td style="color:red;">{{ field.errors }}</td>
                                 </tr>
                             {% endfor %}
                         </tbody></table>

@@ -16,39 +16,46 @@ class ClubForm(forms.ModelForm):
 class RegistrationForm(forms.ModelForm):
 
     first_name = forms.ModelChoiceField(
-        queryset=models.RegisteredPerson.objects.only("first_name"),
-        widget=forms.TextInput(attrs={'id': "first_name", 'name': "first_name"},),
+        label="Prénom",
+        queryset=models.RegisteredPerson.objects.all(),
+        widget=forms.TextInput(),
     )
 
     last_name = forms.ModelChoiceField(
-        queryset=models.RegisteredPerson.objects.only("last_name"),
-        widget=forms.TextInput(attrs={'id': "last_name", 'name': "last_name"},),
+        label="Nom",
+        queryset=models.RegisteredPerson.objects.all(),
+        widget=forms.TextInput(),
     )
 
-    birth_date = forms.ModelChoiceField(required=False,
-        queryset=models.RegisteredPerson.objects.only("birth_date"),
-        widget=forms.TextInput(attrs={'id': "birth_date", 'name': "birth_date"},),
+    birth_date = forms.ModelChoiceField(
+        label="Date de naissance",
+        required=False, queryset=models.RegisteredPerson.objects.all(),
+        widget=forms.TextInput(),
     )
 
-    city = forms.ModelChoiceField(required=False,
-        queryset=models.RegisteredPerson.objects.only("city"),
-        widget=forms.TextInput(attrs={'id': "city", 'name': "city"},),
+    city = forms.ModelChoiceField(
+        label="Ville",
+        required=False, queryset=models.RegisteredPerson.objects.all(),
+        widget=forms.TextInput(),
     )
 
-    club_name = forms.ModelChoiceField(required=False,
-        queryset=models.Club.objects.only("name"),
-        widget=forms.TextInput(attrs={'id': "club_name", 'name': "club_name"},),
+    club_name = forms.ModelChoiceField(
+        label="Nom du club",
+        required=False, queryset=models.Club.objects.all(),
+        widget=forms.TextInput(),
     )
 
-    CHOICE_LIST = list()
-    for license in models.License.objects.all():
-        CHOICE_LIST.append((license.id, license.name))
-    CHOICE_LIST.insert(0, ('', '-------'))
-    license_name = forms.ChoiceField(required=False, choices=CHOICE_LIST)
+    license = forms.ModelChoiceField(
+        label="Nom de license",
+        required=False,
+        queryset=models.License.objects.all(),
+        empty_label='------',
+    )
 
-    number_license = forms.ModelChoiceField(required=False,
-        queryset=models.RegisteredPerson.objects.only("number"),
-        widget=forms.TextInput(attrs={'id': "license_number", 'name': "license_number"},),
+    license_number = forms.ModelChoiceField(
+        label="Numéro de license",
+        required=False, queryset=models.License.objects.all(),
+        widget=forms.TextInput(),
     )
 
     female = 'femme'
@@ -57,7 +64,7 @@ class RegistrationForm(forms.ModelForm):
         (female, u"Femme"),
         (male, u"Homme")
     )
-    sex = forms.ChoiceField(choices=SEX_CHOICES, widget=forms.RadioSelect(attrs={'id': "sex", 'name': "sex"}))
+    sex = forms.ChoiceField(label="Sexe", choices=SEX_CHOICES, widget=forms.RadioSelect())
 
     free = 0
     pay = 3
@@ -65,9 +72,14 @@ class RegistrationForm(forms.ModelForm):
         (free, u"Gratuit"),
         (pay, u"3 €")
     )
-    price = forms.ChoiceField(choices=PRICE_CHOICES, widget=forms.RadioSelect(attrs={'id': "price", 'name': "price"}))
 
-    trip_size = forms.ChoiceField(choices=[(t.id, t.name) for t in models.TripSize.objects.all()])
+    price = forms.ChoiceField(label="Tarif", choices=PRICE_CHOICES, widget=forms.RadioSelect())
+
+    trip_size = forms.ModelChoiceField(
+        label="Taille du parcour",
+        required=True,
+        queryset=models.TripSize.objects.all(),
+    )
 
     class Meta:
         model = models.RegisteredPerson
@@ -77,8 +89,8 @@ class RegistrationForm(forms.ModelForm):
             'birth_date',
             'city',
             'club_name',
-            'license_name',
-            'number_license',
+            'license',
+            'license_number',
             'sex',
             'price',
             'trip_size',

@@ -10,21 +10,21 @@ class License(models.Model):
     name = models.CharField(max_length=255)
 
     def __str__(self):
-        return 'license %s' % self.name
+        return self.name
 
 
 class Club(models.Model):
     name = models.CharField(max_length=255)
 
     def __str__(self):
-        return 'association %s' % self.name
+        return self.name
 
 
 class TripSize(models.Model):
     name = models.CharField(max_length=255)
 
     def __str__(self):
-        return 'association %s' % self.name
+        return self.name
 
 
 class RegisteredPerson(models.Model):
@@ -34,7 +34,7 @@ class RegisteredPerson(models.Model):
     city = models.CharField(max_length=255, blank=True, null=True)
     club_name = models.ForeignKey(Club, on_delete=models.CASCADE, blank=True, null=True)
     license = models.ForeignKey(License, on_delete=models.CASCADE, blank=True, null=True)
-    number_license = models.CharField(max_length=255, blank=True, null=True)
+    license_number = models.CharField(max_length=255, blank=True, null=True)
     price = models.PositiveIntegerField(default=0)
     trip_size = models.ForeignKey(TripSize, on_delete=models.CASCADE)
     sex = models.BooleanField(default=True)

@@ -23,6 +23,7 @@ def on_error(text, will_send_mail=True):
         send_mail('Error from foyerduporteau.net', text, 'foyerduporteau@gmail.com', mails, fail_silently=False)
 
 
+@login_required
 def home_view(request):
     user = None
     registration_form = None
@@ -54,18 +55,18 @@ def add_user(request):
             else:
                 user_registered[0].birth_date = None
             user_registered[0].city = request.POST["city"]
-            if (len(request.POST.get("club_name"))):
+            if (request.POST.get("club_name")):
                 club_id = get_club_id_by_name(request.POST["club_name"])
                 if not club_id:
                     club_id = add_new_club(request, request.POST["club_name"])
             else:
                 club_id = None
             user_registered[0].club_name_id = club_id
-            if (len(request.POST.get("license_name"))):
-                license_id = get_license_id_by_name(request.POST["license_name"])
+            if (request.POST.get("license")):
+                license_id = get_license_id_by_name(request.POST["license"])
                 user_registered[0].license_id = license_id
-            if (len(request.POST.get("number_license"))):
-                user_registered[0].number_license = request.POST["number_license"]
+            if (request.POST.get("license_number")):
+                user_registered[0].license_number = request.POST["license_number"]
             user_registered[0].sex = False if request.POST["sex"] == "homme" else True
             user_registered[0].price = 0 if request.POST["price"] == "0" else 3
             user_registered[0].trip_size_id = request.POST["trip_size"]
@@ -74,13 +75,13 @@ def add_user(request):
             user_registered[0].user_in_charge_id = user_id
             user_registered[0].save()
         else:
-            if (len(request.POST.get("club_name"))):
+            if (request.POST.get("club_name")):
                 club_id = get_club_id_by_name(request.POST["club_name"])
                 if not club_id:
                     club_id = add_new_club(request, request.POST["club_name"])
             else:
                 club_id = None
-            if (len(request.POST.get("license_name"))):
+            if (request.POST.get("license_name")):
                 license = get_license_instance_by_id(request.POST.get("license_name"))
             else:
                 license = None
@@ -119,21 +120,22 @@ def user_search(request, input_name, ajax=False):
         all_users_register = list()
         for all_users in models.RegisteredPerson.objects.all():
             add_user = False
+            value = ""
             if input_name == "firstname":
                 result = re.search(r'^%s[\w]*' % (term), all_users.first_name.lower())
                 if result is not None:
                     add_user = True
-                    label = all_users.first_name
+                    value = all_users.first_name
             if input_name == "lastname":
                 result = re.search(r'^%s[\w]*' % (term), all_users.last_name.lower())
                 if result is not None:
                     add_user = True
-                    label = all_users.last_name
+                    value = all_users.last_name
             if add_user:
                 club_name = get_club_name_by_id(all_users.club_name_id)
                 license_name = get_license_name_by_id(all_users.license_id)
-                # label = "%s %s" % (all_users.first_name, all_users.last_name)
-                all_users_register.append({'label': label, 'first_name': all_users.first_name, 'last_name': all_users.last_name, 'birth_date': all_users.birth_date, 'city': all_users.city, 'club_name': club_name, 'license_name': license_name, 'license_number': all_users.number_license, 'sex': all_users.sex, 'price': all_users.price, 'trip_size': all_users.trip_size.name})
+                label = "%s %s" % (all_users.first_name, all_users.last_name)
+                all_users_register.append({'label': label, 'value': value, 'first_name': all_users.first_name, 'last_name': all_users.last_name, 'birth_date': all_users.birth_date, 'city': all_users.city, 'club_name': club_name, 'license_name': license_name, 'license_number': all_users.license_number, 'sex': all_users.sex, 'price': all_users.price, 'trip_size': all_users.trip_size.name})
         if ajax:
             return JsonResponse(all_users_register, safe=False)
     if input_name == "clubname":
