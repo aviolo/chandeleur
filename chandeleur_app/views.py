@@ -160,7 +160,7 @@ def statistiques(request):
     nb_trip_size_list = list()
     for trip_size in all_trip_size:
         if "BENEVOLE" not in trip_size.name:
-            result = models.RegisteredPerson.objects.all().filter(trip_size=trip_size).count()
+            result = models.RegisteredPerson.objects.all().filter(present=True, trip_size=trip_size).count()
             nb_trip_size_list.append({"size_name": trip_size.name, "size_nb": result})
     womans = models.RegisteredPerson.objects.filter(sex=True, present=True)
     young_woman_list = list()
