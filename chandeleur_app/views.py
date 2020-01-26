@@ -97,7 +97,7 @@ def add_user(request):
             registered_person.city = request.POST["city"]
             registered_person.club_name_id = club_id
             registered_person.license = license
-            registered_person.number_license = request.POST["number_license"]
+            registered_person.license_number = request.POST["license_number"]
             sex = False if request.POST["sex"] == "homme" else True
             registered_person.sex = sex
             registered_person.price = request.POST["price"]
