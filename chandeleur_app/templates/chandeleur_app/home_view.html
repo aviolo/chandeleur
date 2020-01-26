@@ -86,7 +86,7 @@
                 source: "{% url 'ajax-search' 'clubname' %}",
                 delay: 0,
                 select: function (event, ui) {
-                    var club_name = document.getElementById("club_name");
+                    var club_name = document.getElementById("id_club_name");
                     club_name.value = ui.item.club_name;
                 }
             });
