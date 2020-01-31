@@ -164,23 +164,23 @@ def statistiques(request):
             nb_trip_size_list.append({"size_name": trip_size.name, "size_nb": result})
     womans = models.RegisteredPerson.objects.filter(sex=True, present=True)
     young_woman_list = list()
-    for index, person in enumerate(womans.order_by('birth_date')):
+    for index, person in enumerate(womans.order_by('birth_date').reverse()):
         if index == 4:
             break
         young_woman_list.append({"first_name": person.first_name, "last_name": person.last_name, "birth_date": person.birth_date})
     old_woman_list = list()
-    for index, person in enumerate(womans.order_by('birth_date').reverse()):
+    for index, person in enumerate(womans.order_by('birth_date')):
         if index == 4:
             break
         old_woman_list.append({"first_name": person.first_name, "last_name": person.last_name, "birth_date": person.birth_date})
     mans = models.RegisteredPerson.objects.filter(sex=False, present=True)
     young_man_list = list()
-    for index, person in enumerate(mans.order_by('birth_date')):
+    for index, person in enumerate(mans.order_by('birth_date').reverse()):
         if index == 4:
             break
         young_man_list.append({"first_name": person.first_name, "last_name": person.last_name, "birth_date": person.birth_date})
     old_man_list = list()
-    for index, person in enumerate(mans.order_by('birth_date').reverse()):
+    for index, person in enumerate(mans.order_by('birth_date')):
         if index == 4:
             break
         old_man_list.append({"first_name": person.first_name, "last_name": person.last_name, "birth_date": person.birth_date})
