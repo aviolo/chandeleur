@@ -45,27 +45,28 @@
                 }
                 var license_number = document.getElementById("id_license_number");
                 license_number.value = ui.item.license_number;
+                var sex = null;
                 if (ui.item.sex) {
-                    var sex = document.getElementById("id_sex_0");
+                    sex = document.getElementById("id_sex_0");
                     sex.checked = true;
                 } else {
-                    var sex = document.getElementById("id_sex_1");
+                    sex = document.getElementById("id_sex_1");
                     sex.checked = true;
                 }
+                var price = null;
                 if (ui.item.price === 0) {
-                    var price = document.getElementById("id_price_0");
+                    price = document.getElementById("id_price_0");
                     price.checked = true;
                 } else {
-                    var price = document.getElementById("id_price_1");
+                    price = document.getElementById("id_price_1");
                     price.checked = true;
                 }
                 var trip_size = document.getElementById("id_trip_size");
-                for (var index = 0; trip_size[index]; index++) {
-                    if (trip_size[index].label.indexOf(ui.item.trip_size) === 0) {
-                        trip_size.selectedIndex = index;
+                for (var index2 = 0; trip_size[index2]; index2++) {
+                    if (trip_size[index2].label.indexOf(ui.item.trip_size) === 0) {
+                        trip_size.selectedIndex = index2;
                         break;
                     }
-
                 }
             }
             $("#id_first_name").catcomplete({
@@ -80,6 +81,14 @@
                 delay: 0,
                 select: function (event, ui) {
                     complete_other_filed(ui);
+                }
+            });
+            $("#id_city").catcomplete({
+                source: "{% url 'ajax-search' 'city' %}",
+                delay: 0,
+                select: function (event, ui) {
+                    var city = document.getElementById("id_city");
+                    city.value = ui.item.city;
                 }
             });
             $("#id_club_name").catcomplete({

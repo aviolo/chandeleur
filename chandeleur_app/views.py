@@ -2,6 +2,8 @@ from datetime import datetime, timedelta
 from django.utils import timezone
 import logging
 import re
+import requests
+import sys
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse, HttpResponseRedirect
@@ -21,6 +23,22 @@ def on_error(text, will_send_mail=True):
     mails = [admin[1] for admin in settings.ADMINS]
     if will_send_mail:
         send_mail('Error from foyerduporteau.net', text, 'foyerduporteau@gmail.com', mails, fail_silently=False)
+
+
+def make_request(url, header=None, auth=False, data=None, request_type="get"):
+    authentification = ()
+    try:
+        if request_type == "get":
+            response = requests.get(url, headers=header, auth=authentification, data=data)
+        else:
+            response = requests.post(url, headers=header, auth=authentification, data=data)
+    except Exception as e:
+        print(e)
+        sys.exit(1)
+    if response.status_code > 201:
+        print('Status:', response.status_code, 'Problem with the request. Exiting.')
+        sys.exit(1)
+    return response.json()
 
 
 @login_required
@@ -94,7 +112,14 @@ def add_user(request):
                 registered_person.birth_date = date_time_obj
             else:
                 registered_person.birth_date = None
-            registered_person.city = request.POST["city"]
+            city = request.POST["city"]
+            url = "https://fr.distance24.org/route.json?stops=Bois-Le-Roi|Poitiers"
+            response = make_request(url)
+            if response:
+                distance = response["distance"]
+            else:
+                distance = 0
+            registered_person.city = city
             registered_person.club_name_id = club_id
             registered_person.license = license
             registered_person.license_number = request.POST["license_number"]
@@ -138,7 +163,7 @@ def user_search(request, input_name, ajax=False):
                 all_users_register.append({'label': label, 'value': value, 'first_name': all_users.first_name, 'last_name': all_users.last_name, 'birth_date': all_users.birth_date, 'city': all_users.city, 'club_name': club_name, 'license_name': license_name, 'license_number': all_users.license_number, 'sex': all_users.sex, 'price': all_users.price, 'trip_size': all_users.trip_size.name})
         if ajax:
             return JsonResponse(all_users_register, safe=False)
-    if input_name == "clubname":
+    elif input_name == "clubname":
         club_name_register = list()
         for club_name in models.Club.objects.all():
             add_club = False
@@ -146,10 +171,25 @@ def user_search(request, input_name, ajax=False):
             if result is not None:
                 add_club = True
             if add_club:
-                print(club_name.name)
                 club_name_register.append({'label': club_name.name, 'club_name': club_name.name})
         if ajax:
             return JsonResponse(club_name_register, safe=False)
+    elif input_name == "city":
+        city_list = set()
+        for city in models.RegisteredPerson.objects.values("city"):
+            if len(city) > 0:
+                city = city.lower()
+                city_list.append(city)
+        city_registered = list()
+        for city in city_list:
+            add_city = False
+            result = re.search(r'^%s[\w]*' % (term), city)
+            if result is not None:
+                add_city = True
+            if add_city:
+                city_registered.append({'label': city, 'city': city})
+        if ajax:
+            return JsonResponse(city_registered, safe=False)
 
 
 def statistiques(request):

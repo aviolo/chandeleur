@@ -15,14 +15,14 @@ class ClubForm(forms.ModelForm):
 
 class RegistrationForm(forms.ModelForm):
 
-    first_name = forms.ModelChoiceField(
-        label="Prénom",
+    last_name = forms.ModelChoiceField(
+        label="Nom",
         queryset=models.RegisteredPerson.objects.all(),
         widget=forms.TextInput(),
     )
 
-    last_name = forms.ModelChoiceField(
-        label="Nom",
+    first_name = forms.ModelChoiceField(
+        label="Prénom",
         queryset=models.RegisteredPerson.objects.all(),
         widget=forms.TextInput(),
     )
@@ -76,7 +76,7 @@ class RegistrationForm(forms.ModelForm):
     price = forms.ChoiceField(label="Tarif", choices=PRICE_CHOICES, widget=forms.RadioSelect())
 
     trip_size = forms.ModelChoiceField(
-        label="Taille du parcour",
+        label="Taille du parcours",
         required=True,
         queryset=models.TripSize.objects.all(),
     )
