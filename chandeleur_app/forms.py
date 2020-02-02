@@ -84,8 +84,8 @@ class RegistrationForm(forms.ModelForm):
     class Meta:
         model = models.RegisteredPerson
         fields = (
-            'first_name',
             'last_name',
+            'first_name',
             'birth_date',
             'city',
             'club_name',
