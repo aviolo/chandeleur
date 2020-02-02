@@ -234,7 +234,8 @@ def statistiques(request):
         old_man = models.RegisteredPerson.objects.all().filter(present=True, club_name_id=club.id, sex=False, birth_date__lt=timezone.now() - timedelta(days=365 * 18)).count()
         young_man = models.RegisteredPerson.objects.all().filter(present=True, club_name_id=club.id, sex=False, birth_date__gt=timezone.now() - timedelta(days=365 * 18)).count()
         total = models.RegisteredPerson.objects.all().filter(present=True, club_name_id=club.id).count()
-        info.append({"club_name": club.name, "old_woman": old_woman, "young_woman": young_woman, "old_man": old_man, "young_man": young_man, "total": total})
+        if total > 0:
+            info.append({"club_name": club.name, "old_woman": old_woman, "young_woman": young_woman, "old_man": old_man, "young_man": young_man, "total": total})
     old_woman = models.RegisteredPerson.objects.all().filter(present=True, club_name_id=None or None, sex=True, birth_date__lt=timezone.now() - timedelta(days=365 * 18)).count()
     young_woman = models.RegisteredPerson.objects.all().filter(present=True, club_name_id=None, sex=True, birth_date__gt=timezone.now() - timedelta(days=365 * 18)).count()
     old_man = models.RegisteredPerson.objects.all().filter(present=True, club_name_id=None, sex=False, birth_date__lt=timezone.now() - timedelta(days=365 * 18)).count()
