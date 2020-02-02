@@ -194,6 +194,9 @@ def user_search(request, input_name, ajax=False):
 
 def statistiques(request):
     nb_sign = models.RegisteredPerson.objects.all().filter(present=True).count()
+    nb_sign_volunteer = models.RegisteredPerson.objects.all().filter(present=True).filter(trip_size_id=4).count()
+    nb_sign_real = models.RegisteredPerson.objects.all().filter(present=True).exclude(trip_size_id=4).count()
+    nb_sign_payed = models.RegisteredPerson.objects.all().filter(present=True).filter(price=3).exclude(trip_size_id=4).count()
     nb_woman = models.RegisteredPerson.objects.all().filter(sex=True, present=True).count()
     nb_man = models.RegisteredPerson.objects.all().filter(sex=False, present=True).count()
     all_trip_size = get_all_size_trip()
@@ -239,7 +242,7 @@ def statistiques(request):
     total = models.RegisteredPerson.objects.all().filter(present=True, club_name_id=None).count()
     info.append({"club_name": "Pas de club", "old_woman": old_woman, "young_woman": young_woman, "old_man": old_man, "young_man": young_man, "total": total})
     return render(request, "chandeleur_app/statistiques.html", {
-        "nb_sign": nb_sign, "nb_woman": nb_woman, "nb_man": nb_man, "nb_small": nb_trip_size_list[0]["size_nb"], "nb_medium": nb_trip_size_list[1]["size_nb"], "nb_big": nb_trip_size_list[2]["size_nb"], "young_woman": young_woman_list, "old_woman": old_woman_list, "young_man": young_man_list, "old_man": old_man_list, "info": info
+        "nb_sign": nb_sign, "nb_sign_volunteer": nb_sign_volunteer, "nb_sign_real": nb_sign_real, "nb_sign_payed": nb_sign_payed, "nb_woman": nb_woman, "nb_man": nb_man, "nb_small": nb_trip_size_list[0]["size_nb"], "nb_medium": nb_trip_size_list[1]["size_nb"], "nb_big": nb_trip_size_list[2]["size_nb"], "young_woman": young_woman_list, "old_woman": old_woman_list, "young_man": young_man_list, "old_man": old_man_list, "info": info
     })
 
 
