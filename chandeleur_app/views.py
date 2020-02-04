@@ -5,6 +5,7 @@ import re
 import requests
 import sys
 from django.conf import settings
+from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse, HttpResponseRedirect
 from django.core.mail import send_mail
@@ -175,13 +176,15 @@ def user_search(request, input_name, ajax=False):
         if ajax:
             return JsonResponse(club_name_register, safe=False)
     elif input_name == "city":
-        city_list = set()
+        city_list = list()
         for city in models.RegisteredPerson.objects.values("city"):
-            if len(city) > 0:
+            city = city["city"]
+            if city and len(city) > 0:
                 city = city.lower()
                 city_list.append(city)
+        sorted_city = set(city_list)
         city_registered = list()
-        for city in city_list:
+        for city in sorted_city:
             add_city = False
             result = re.search(r'^%s[\w]*' % (term), city)
             if result is not None:
@@ -199,6 +202,15 @@ def statistiques(request):
     nb_sign_payed = models.RegisteredPerson.objects.all().filter(present=True).filter(price=3).exclude(trip_size_id=4).count()
     nb_woman = models.RegisteredPerson.objects.all().filter(sex=True, present=True).count()
     nb_man = models.RegisteredPerson.objects.all().filter(sex=False, present=True).count()
+    user_assigned_list = User.objects.values("id", "username")
+    nb_user_registered_by_username = list()
+    for user_assigned in user_assigned_list:
+        nb = models.RegisteredPerson.objects.all().filter(user_in_charge_id=user_assigned["id"]).count()
+        info = dict()
+        info["username"] = user_assigned["username"]
+        info["numbers"] = nb
+        nb_user_registered_by_username.append(info)
+    print(nb_user_registered_by_username)
     all_trip_size = get_all_size_trip()
     nb_trip_size_list = list()
     for trip_size in all_trip_size:
@@ -242,9 +254,8 @@ def statistiques(request):
     young_man = models.RegisteredPerson.objects.all().filter(present=True, club_name_id=None, sex=False, birth_date__gt=timezone.now() - timedelta(days=365 * 18)).count()
     total = models.RegisteredPerson.objects.all().filter(present=True, club_name_id=None).count()
     info.append({"club_name": "Pas de club", "old_woman": old_woman, "young_woman": young_woman, "old_man": old_man, "young_man": young_man, "total": total})
-    return render(request, "chandeleur_app/statistiques.html", {
-        "nb_sign": nb_sign, "nb_sign_volunteer": nb_sign_volunteer, "nb_sign_real": nb_sign_real, "nb_sign_payed": nb_sign_payed, "nb_woman": nb_woman, "nb_man": nb_man, "nb_small": nb_trip_size_list[0]["size_nb"], "nb_medium": nb_trip_size_list[1]["size_nb"], "nb_big": nb_trip_size_list[2]["size_nb"], "young_woman": young_woman_list, "old_woman": old_woman_list, "young_man": young_man_list, "old_man": old_man_list, "info": info
-    })
+    print(nb_user_registered_by_username)
+    return render(request, "chandeleur_app/statistiques.html", {"registered_by_username": nb_user_registered_by_username, "nb_sign": nb_sign, "nb_sign_volunteer": nb_sign_volunteer, "nb_sign_real": nb_sign_real, "nb_sign_payed": nb_sign_payed, "nb_woman": nb_woman, "nb_man": nb_man, "nb_small": nb_trip_size_list[0]["size_nb"], "nb_medium": nb_trip_size_list[1]["size_nb"], "nb_big": nb_trip_size_list[2]["size_nb"], "young_woman": young_woman_list, "old_woman": old_woman_list, "young_man": young_man_list, "old_man": old_man_list, "info": info})
 
 
 def add_new_club(request, club_name):

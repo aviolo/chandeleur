@@ -106,7 +106,6 @@
 	                        {% endfor %}
 	                    </tbody></table>
 	                </div>
-
 	                <div class="subtitle">Les hommes les plus agés :</div>
 	                <div>
 		                <table><tbody>
@@ -119,6 +118,17 @@
 	                <br>
 	                
                 </div>
+                 <div class="block">
+	                <div class="title">Inscriptions</div>
+	                <div>
+		                <table><tbody>
+		                	<tr><th>identifiant : </th><th>nombre d'inscrits : </th></tr>
+	                        {% for field in registered_by_username %}
+	                        	<tr><td>{{ field.username }}</td><td>{{ field.numbers }}</td></tr>
+	                        {% endfor %}
+	                    </tbody></table>
+	                </div>
+	            </div>    
             </div>
         </div>
     {% endif %}
